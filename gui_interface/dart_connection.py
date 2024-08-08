@@ -21,7 +21,7 @@ def prompt_for_bool(prompt):
 
 # TODO: _run_checks() and then run_dart() for the inference pipeline (run_once() vs run_batched())?
 
-# TODO: return results as list to main.py so that it can delegate results.csv creation to other
+# TODO: return results as list to app.py so that it can delegate results.csv creation to other
 def run_inference_pipeline(img_folder, img_ext, crop_black_borders):
     ### TODO: overwrite / create new files rather than complaining
     # check if dart_inference_results.csv exists
