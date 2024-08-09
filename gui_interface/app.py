@@ -1,3 +1,4 @@
+import sys
 import tkinter as tk
 from tkinter import ttk, filedialog
 from PIL import Image, ImageTk
@@ -49,12 +50,14 @@ class App(tk.Tk):
 
     def import_folder_func(self, path):
         print("path to FOLDER:", path)  # DEBUG
-
-        # self.image_output = ImageOutput(self)
         self.dir_path = path
 
         if os.path.isdir(self.dir_path):
-            # self.image_import_frame.grid_forget()
+            ### from tut, import_image
+            # TODO: change to including images found...?
+            self.close_button = CloseOutput(self)
+            ###
+
             self.image_import_frame.update_folder_selected(self.dir_path)
             # TODO: improve layout
             self.menu = ttk.Frame(self)
@@ -62,25 +65,30 @@ class App(tk.Tk):
             self.menu.rowconfigure(0, weight=1)
             self.menu.columnconfigure(0, weight=1)
 
-            # the button
-            # image_import_frame = ttk.Button(master=self.menu, text="select folder", command=self.open_dialog)
-            # image_import_frame.grid(column=1, row=0)
+            # TODO: add combo box for file name extensions?
 
             # TODO: this probably goes into menu.py later...
             # self.dart_run_button = DartRun()
             self.dart_run_button = ttk.Button(self.menu, text="Run DART", command=self.run_dart)
             self.dart_run_button.pack()
 
+    ### from tut
+    def resize_image(self, event):
+        canvas_ratio = event.width / event.height
+    ###
+
     # TODO: img/fdr should just be re-selectable
+    ### from tut
     def close_edit(self):
         pass
+    ###
 
     # TODO: potentially put this is the function in dart_connection.py
     def run_dart(self):
         if not os.path.isdir(self.dir_path):
             pass
         print("-- run dart function --")
-        run_inference_pipeline(img_folder=self.dir_path, img_ext="tif", crop_black_borders="no")
+        run_inference_pipeline(img_folder=self.dir_path, img_ext="jpg", crop_black_borders="no")
 
 
 # TODO: all toggles should be one class.

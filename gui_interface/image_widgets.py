@@ -56,7 +56,24 @@ class DirImport(ttk.Frame):
     def update_folder_selected(self, folder_path):
         self.no_files_selected.configure(text=("Folder selected: " + folder_path))
 
+
 class ImageOutput(tk.Canvas):
-    def __init__(self, parent):
+    def __init__(self, parent, resize_image_func):
         super().__init__(master=parent, background=BACKGROUND_COLOR, bd=0, relief="ridge")
         self.grid(row=0, column=0, sticky="nsew")
+        self.bind("<Configure>", resize_image_func)
+
+
+class CloseOutput(ttk.Button):
+    def __init__(self, parent):
+        super().__init__(
+            master=parent,
+            text="x",
+            # text_color=WHITE,
+            # fg_color = "transparent",
+            # width=40,
+            # height=40,
+            # corner_radius=0.05,
+            # hover_color=CLOSE_RED
+        )  # the arguments can be passed if switch to ctk made.
+        self.place(relx=0.99, rely=0.01, anchor="ne")
