@@ -1,7 +1,9 @@
 import os
 import tkinter as tk
 from tkinter import ttk
+
 from .settings import *
+
 
 class Menu(ttk.Frame):
     def __init__(self, parent, run_dart_func):
@@ -25,10 +27,9 @@ class Menu(ttk.Frame):
     def display_menu(self):
         self.welcome_label.forget()
 
-
         self.settings_panel = SettingsPanel(self)
 
-        self.dart_panel = DartPanel(self, self.run_dart_func)
+        self.dart_panel = DartPanel(self, self.run_dart_func, self.settings_panel.get_file_extension_var(), self.settings_panel.get_crop_bool_var(), self.settings_panel.get_export_location_var())
 
 class SettingsPanel(ttk.Frame):
     def __init__(self, parent):
@@ -44,17 +45,17 @@ class SettingsPanel(ttk.Frame):
         # self.label_extension = ttk.Label(self, text="What file extensions do the images have?")
         self.label_extension = ttk.Label(self, text="Select the image file extension:")
         self.label_extension.grid(row=0, column=0, sticky="w")
-        combo_ext_string = tk.StringVar(value=POSSIBLE_IMG_EXTENSIONS[0])
-        self.combobox_extensions = ttk.Combobox(self, values=POSSIBLE_IMG_EXTENSIONS, textvariable=combo_ext_string)
+        self.combo_ext_string = tk.StringVar(value=POSSIBLE_IMG_EXTENSIONS[0])
+        self.combobox_extensions = ttk.Combobox(self, values=POSSIBLE_IMG_EXTENSIONS, textvariable=self.combo_ext_string)
         self.combobox_extensions.grid(row=0, column=1, sticky="w")
 
         # Crop black borders
         self.label_borders = ttk.Label(self, text="Crop black borders:")
         self.label_borders.grid(row=1, column=0, sticky="w")
-        check_borders_bool = tk.BooleanVar(value=False)  # TODO: make sure there's a default off...?
-        self.checkbtn_borders = ttk.Checkbutton(self, variable=check_borders_bool, onvalue=True,
-                                                offvalue=False)
-        self.checkbtn_borders.grid(row=1, column=1, sticky="w")
+        self.check_borders_bool = tk.BooleanVar(value=False)  # TODO: make sure there's a default off...?
+        self.checkbutton_borders = ttk.Checkbutton(self, variable=self.check_borders_bool, onvalue=True,
+                                                   offvalue=False)
+        self.checkbutton_borders.grid(row=1, column=1, sticky="w")
 
         # Export location
         self.label_export = ttk.Label(self, text="Select results export location: ")
@@ -63,9 +64,20 @@ class SettingsPanel(ttk.Frame):
         self.export_btn.grid(row=2, column=1, sticky="w")
         # TODO: Which folder is selected?
 
+    def get_file_extension_var(self):
+        return self.combo_ext_string
+
+    def get_crop_bool_var(self):
+        return self.check_borders_bool
+
+    def get_export_location_var(self):
+        # TODO: not a real value.
+        return tk.StringVar(value="dummy value, TODO: change")
+
+
 
 class DartPanel(ttk.Frame):
-    def __init__(self, parent, run_dart_func):
+    def __init__(self, parent, run_dart_func, file_ext_var, crop_var, export_loc_var):
         super().__init__(master=parent)
         self.pack(fill="x", pady=4, ipady=8)
 
@@ -74,9 +86,15 @@ class DartPanel(ttk.Frame):
 
         # run DART
         # self.dart_run_button = DartRun()
-        self.dart_run_button = ttk.Button(self, text="Run DART", command=run_dart_func)
+        self.dart_run_button = ttk.Button(
+                self,
+                text="Run DART",
+                command=lambda: run_dart_func(file_ext_var.get(), crop_var.get(), export_loc_var.get()))
         self.dart_run_button.pack()
 
+        # TODO: update used on what's happening
+
+        # TODO: better info display...
 
 ### from tut
 class PositionFrame(ttk.Frame):

@@ -1,12 +1,11 @@
 import sys
-import tkinter as tk
-from tkinter import ttk, filedialog
-from PIL import Image, ImageTk
-from .image_widgets import *
-from .dart_connection import run_inference_pipeline
-from .menu import Menu
 
-import os
+import tkinter as tk
+from tkinter import ttk
+
+from .dart_connection import run_inference_pipeline
+from .file_handling import *
+from .menu import Menu
 
 
 # TODO: relpath saving? 1
@@ -40,7 +39,8 @@ class App(tk.Tk):
         # dart banner / title
         self.banner = ttk.Frame(self)
         self.banner.grid(row=0, columnspan=2, padx=5, pady=5, sticky='nsew')
-        self.banner_text = ttk.Label(self.banner, text="DART -  Deep Approximation of Retinal Traits", font="Courier 24 bold")
+        self.banner_text = ttk.Label(self.banner, text="DART -  Deep Approximation of Retinal Traits",
+                                     font="Courier 24 bold")
         self.banner_text.pack(pady=10)
 
         # widgets  # TODO: create_widgets() for all below perhaps more intuitive
@@ -50,7 +50,6 @@ class App(tk.Tk):
         # TODO: Menu greyed out / message.
         self.menu = Menu(self, self.run_dart)
 
-
     def open_dialog(self):
         path = filedialog.askdirectory()
         self.import_folder_func(path)
@@ -59,8 +58,9 @@ class App(tk.Tk):
         pass
 
     def import_folder_func(self, path):
-        print("path to FOLDER:", path)  # DEBUG
-        self.dir_path = path
+        self.dir_path = path if os.path.isdir(path) else ""
+
+        print("path to FOLDER:", self.dir_path)  # DEBUG
 
         # TODO: potentially a separate method. Or this all goes to the Menu class
         if os.path.isdir(self.dir_path):
@@ -76,25 +76,20 @@ class App(tk.Tk):
             self.menu = Menu(self, self.run_dart)
             self.menu.display_menu()
 
-    ### from tut
-    def resize_image(self, event):
-        canvas_ratio = event.width / event.height
-    ###
-
-    # TODO: img/fdr should just be re-selectable
-    ### from tut
-    def close_edit(self):
-        pass
-    ###
-
     # TODO: potentially put this is the function in dart_connection.py
-    def run_dart(self):
+    def run_dart(self, file_ext, crop_borders, export_loc):
         if not os.path.isdir(self.dir_path):
             pass
-        print("-- run dart function --")
-        run_inference_pipeline(img_folder=self.dir_path, img_ext="jpg", crop_black_borders="no")
+        print("-- run dart function --")  # DEBUG
+        # TODO: get rid of the "." in the file extension name
+        print("> Import path: ", self.dir_path)  # DEBUG
+        file_ext = file_ext[1:]
+        print("> File extension: ", file_ext)  # DEBUG
+        # crop_borders = "yes" if crop_borders else "no"
+        print("> Crop borders: ", crop_borders)  # DEBUG
+        print("> Export location: ", export_loc)  # DEBUG
+        run_inference_pipeline(img_folder=self.dir_path, img_ext=file_ext, crop_black_borders=crop_borders)
 
-        # TODO: Messages + confirmation.
+        # TODO: Messages + confirmation. (use a canvas?)
 
-
-# TODO: all toggles should be one class.
+# TODO: all toggles should be one class. (maybe all option settings should be - left right etc.)
