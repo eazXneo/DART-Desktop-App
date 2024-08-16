@@ -1,9 +1,10 @@
 import sys
+from pathlib import Path
 
 import tkinter as tk
 from tkinter import ttk
 
-from .dart_connection import run_inference_pipeline
+from .dart_connection import DartConnector
 from .file_handling import *
 from .menu import Menu
 
@@ -23,7 +24,7 @@ class App(tk.Tk):
         # setup
         super().__init__()
         self.geometry("500x300")
-        self.title("DART prototype 1")
+        self.title("DART interface Version 1.1")
         self.minsize(800, 500)
         self.configure(bg="darkgrey")  # DEBUG: need borders for now
         self.resizable(False, False)  # DEBUG: for now, unresponsive
@@ -74,12 +75,16 @@ class App(tk.Tk):
             # TODO: probably just un-block the menu...
             self.menu.grid_forget()
             self.menu = Menu(self, self.run_dart)
-            self.menu.display_menu()
+            self.menu.display_menu(self.dir_path)
 
     # TODO: potentially put this is the function in dart_connection.py
     def run_dart(self, file_ext, crop_borders, export_loc):
-        if not os.path.isdir(self.dir_path):
-            pass
+        dart_panel = self.menu.get_dart_panel()
+        assert dart_panel is not None, "fix code structure around menu panels."
+
+        dart_panel.clear_display()
+
+        # DEBUG
         print("-- run dart function --")  # DEBUG
         # TODO: get rid of the "." in the file extension name
         print("> Import path: ", self.dir_path)  # DEBUG
@@ -88,7 +93,31 @@ class App(tk.Tk):
         # crop_borders = "yes" if crop_borders else "no"
         print("> Crop borders: ", crop_borders)  # DEBUG
         print("> Export location: ", export_loc)  # DEBUG
-        run_inference_pipeline(img_folder=self.dir_path, img_ext=file_ext, crop_black_borders=crop_borders)
+        # TODO: results should be a list.
+
+        dart_connector = DartConnector(img_folder=self.dir_path, img_ext=file_ext, crop_black_borders=crop_borders, export_loc=export_loc)
+
+        # TODO: potentially send the labels to dart_connection, and dart_connector will call all functions? Meh
+
+        # found images.
+        images = dart_connector.find_images()
+        assert len(images) > 0, 'No images found'  # TODO: handle this case and tell user
+        dart_panel.update_label(0, f"Found {len(images)} images, e.g. {Path(images[0]).name}, ..., {Path(images[-1]).name}")
+
+        # load pipeline
+        pipeline = dart_connector.load_pipeline()
+        dart_panel.update_label(1, "Starting inference....")
+
+        # start inference (TODO and pass the progressbar)
+        results = dart_connector.run_inference_pipeline()
+        dart_panel.update_label(2, "Writing results to file...")
+
+        # write to file
+        self.export_results_obj = ResultsExport(results, export_loc)
+        self.export_results_obj.export_results()
+
+        # done
+        dart_panel.update_label(3, "Done!")
 
         # TODO: Messages + confirmation. (use a canvas?)
 

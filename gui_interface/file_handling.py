@@ -39,3 +39,21 @@ class DirImport(ttk.Frame):
         for dir in path_split:
             new_text += " " + str(os.linesep) + "|_ " + dir
         self.no_files_selected.configure(text=("Folder selected: " + new_text))
+
+
+# TODO decide whether utility class, or more Tkinter related as a frame.
+class ResultsExport:
+    def __init__(self, results, default_export_loc):
+        self.results = results
+        self.export_loc = default_export_loc
+
+    def export_results(self):
+        print('Writing results to file...')
+        with open(os.path.join(self.export_loc, 'dart_inference_results.csv'), 'w') as f:
+            f.write('image_path,image_name,FD\n')
+            for img_path, img_name, FD in self.results:
+                f.write(f'{img_path}, {img_name}, {FD}\n')
+
+        print('Created dart_inference_results.csv')
+
+        print('Done!')

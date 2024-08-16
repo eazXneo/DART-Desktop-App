@@ -1,15 +1,10 @@
-# temporarily append the parent directory to the path
-# import sys
 import os
-
-# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from pathlib import Path
+import glob
+from PIL import Image
 
 import dart.inference as dart
-from PIL import Image
-import glob
-from pathlib import Path
-
-CROP_THRESHOLD = 70
+from .settings import CROP_THRESHOLD
 
 def prompt_for_bool(prompt):
     while True:
@@ -19,60 +14,57 @@ def prompt_for_bool(prompt):
             print("Invalid input. Please type 'yes' or 'no'!")
 
 
-# TODO: _run_checks() and then run_dart() for the inference pipeline (run_once() vs run_batched())?
+class DartConnector:
 
-# TODO: return results as list to app.py so that it can delegate results.csv creation to other
-def run_inference_pipeline(img_folder, img_ext, crop_black_borders):
-    ### TODO: overwrite / create new files rather than complaining
-    # check if dart_inference_results.csv exists
-    assert not os.path.exists('dart_inference_results.csv'), \
-        'ERROR: dart_inference_results.csv already exists. Please delete \ rename it before running this script.'
+    # TODO: _run_checks() and then run_dart() for the inference pipeline (run_once() vs run_batched())?
 
-    # img_folder = 'PATH_TO_YOUR_IMAGES_FOLDER'
-    # img_ext = 'jpg'
-    # get user input
-    # img_folder = input('Enter the path to the folder containing your images: ')
-    # img_ext = input('Enter the extension of your images (e.g. jpg, png, etc.): ')
-    #
-    # crop_black_borders = prompt_for_bool('Do you want to crop black borders from your images? (yes/no): ')
-    print(f'Okay, we {"will" if crop_black_borders else "will not"} crop black borders.')
+    # TODO: return results as list to app.py so that it can delegate results.csv creation to other
+    def __init__(self, img_folder, img_ext, crop_black_borders, export_loc):
+        self.img_folder = img_folder
+        self.img_ext = img_ext
+        self.crop_black_borders = crop_black_borders
+        self.export_loc = export_loc
 
-    print(f'Looking for images in {img_folder} with extension {img_ext}')
-    images = list(glob.glob(img_folder + f'/*.{img_ext}'))
+        ### TODO: overwrite / create new files rather than complaining
+        # check if dart_inference_results.csv exists
+        assert not os.path.exists(os.path.join(export_loc, 'dart_inference_results.csv')), \
+            'ERROR: dart_inference_results.csv already exists. Please delete \ rename it before running this script.'
 
-    assert len(images) > 0, 'No images found'
-    print(f'Found {len(images)} images, e.g. {Path(images[0]).name}, ..., {Path(images[-1]).name}')
+    def find_images(self):
+        # crop_black_borders = prompt_for_bool('Do you want to crop black borders from your images? (yes/no): ')
+        print(f'Okay, we {"will" if self.crop_black_borders else "will not"} crop black borders.')
 
-    print('Loading pipeline...')
-    dart_pipeline = dart.get_inference_pipeline(model_name='resnet18', device='cpu',
-                                           resize_images=True, preprocessing_backend='albumentations_if_available',
-                                           crop_black_borders=crop_black_borders,
-                                           crop_threshold=CROP_THRESHOLD,
-                                           loading_verbose=True, loading_pbar=True)
+        print(f'Looking for images in {self.img_folder} with extension {self.img_ext}')
+        self.images = list(glob.glob(self.img_folder + f'/*.{self.img_ext}'))
 
-    print('\nStarting inference...')
-    results = []
-    for img_path in images:
-        print(f'Inferring {img_path}', end='\r')
-        img = Image.open(img_path)
-        print(f'Inferring {img_path} - Image loaded, running model', end='\r')
-        FD = dart_pipeline(img)[0]
-        print(f'{img_path}: {FD}')
-        results.append((img_path, Path(img_path).name, FD))
+        assert len(self.images) > 0, 'No images found'
+        print(f'Found {len(self.images)} images, e.g. {Path(self.images[0]).name}, ..., {Path(self.images[-1]).name}')
 
-    print('Inference complete!')
+        return self.images
 
-    ### TODO: this goes into other class, where to write to file...
+    def load_pipeline(self):
+        print('Loading pipeline...')
+        self.dart_pipeline = dart.get_inference_pipeline(model_name='resnet18', device='cpu',
+                                               resize_images=True, preprocessing_backend='albumentations_if_available',
+                                               crop_black_borders=self.crop_black_borders,
+                                               crop_threshold=CROP_THRESHOLD,
+                                               loading_verbose=True, loading_pbar=True)
 
-    print('Writing results to file...')
-    with open('dart_inference_results.csv', 'w') as f:
-        f.write('image_path,image_name,FD\n')
-        for img_path, img_name, FD in results:
-            f.write(f'{img_path}, {img_name}, {FD}\n')
+        return self.dart_pipeline
 
-    print('Created dart_inference_results.csv')
 
-    # remove the temporarily added parent directory
-    # sys.path.pop()
+    def run_inference_pipeline(self):
+        print('\nStarting inference...')
+        results = []
+        for img_path in self.images:
+            print(f'Inferring {img_path}', end='\r')
+            img = Image.open(img_path)
+            print(f'Inferring {img_path} - Image loaded, running model', end='\r')
+            FD = self.dart_pipeline(img)[0]
+            # TODO: move the progress bar along here?
+            print(f'{img_path}: {FD}')
+            results.append((img_path, Path(img_path).name, FD))
 
-    print('Done!')
+        print('Inference complete!')
+
+        return results

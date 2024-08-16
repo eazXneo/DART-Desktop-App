@@ -1,6 +1,6 @@
 import os
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
 
 from .settings import *
 
@@ -11,6 +11,9 @@ class Menu(ttk.Frame):
         self.grid(row=1, column=1,  padx=5, pady=5, sticky="nsew")
 
         self.run_dart_func = run_dart_func
+
+        self.settings_panel = None
+        self.dart_panel = None
 
         self.display_welcome()
 
@@ -24,19 +27,32 @@ class Menu(ttk.Frame):
         self.welcome_label = ttk.Label(self, text=welcome_message)
         self.welcome_label.pack(padx=5, pady=20)
 
-    def display_menu(self):
-        self.welcome_label.forget()
+    def display_menu(self, import_dir):
+        new_text = ("Please adjust the settings, and when ready, select \"run DART\"." + str(os.linesep) +
+                    "The results will be saved as \"dart_inference_results.csv\".")
+        self.welcome_label.configure(text=new_text)
+        # self.label_about_exports = ttk.Label(self, text="The results will be saved as \"dart_inference_results.csv\"")
+        # self.label_about_exports.grid(row=4, columnspan=2, sticky="w")
 
-        self.settings_panel = SettingsPanel(self)
+        self.settings_panel = SettingsPanel(self, import_dir)
 
-        self.dart_panel = DartPanel(self, self.run_dart_func, self.settings_panel.get_file_extension_var(), self.settings_panel.get_crop_bool_var(), self.settings_panel.get_export_location_var())
+        self.dart_panel = DartPanel(
+            self,
+            self.run_dart_func,
+            self.settings_panel.get_file_extension_var(),
+            self.settings_panel.get_crop_bool_var(),
+            self.settings_panel.get_export_location_var()
+        )
+
+    def get_dart_panel(self):  # TODO seems dodgy what if None?
+        return self.dart_panel
 
 class SettingsPanel(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, default_export_dir):
         super().__init__(master=parent)
         self.pack(fill="x", pady=4, padx=10, ipady=8)
 
-        self.rowconfigure((0, 1, 2), weight=1)
+        self.rowconfigure((0, 1, 2, 3, 4), weight=1)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=2)
 
@@ -60,9 +76,18 @@ class SettingsPanel(ttk.Frame):
         # Export location
         self.label_export = ttk.Label(self, text="Select results export location: ")
         self.label_export.grid(row=2, column=0, sticky="w")
-        self.export_btn = ttk.Button(master=self, text="select results folder")  # TODO: set command
+        self.export_btn = ttk.Button(master=self, text="select results folder", command=self.set_export_loc)  # TODO: set command
         self.export_btn.grid(row=2, column=1, sticky="w")
+
         # TODO: Which folder is selected?
+        self.export_frame = ttk.Frame(self)
+        self.export_frame.grid(row=3, columnspan=2, sticky="w", ipadx=10)
+        self.export_text = tk.StringVar(value=f"Default export location selected: ")
+        self.export_location = tk.StringVar(value=default_export_dir)
+        self.label_export_text = ttk.Label(self.export_frame, textvariable=self.export_text)
+        self.label_export_text.pack(side="left")
+        self.label_folder_selected = ttk.Label(self.export_frame, textvariable=self.export_location)
+        self.label_folder_selected.pack(side="left")
 
     def get_file_extension_var(self):
         return self.combo_ext_string
@@ -72,40 +97,54 @@ class SettingsPanel(ttk.Frame):
 
     def get_export_location_var(self):
         # TODO: not a real value.
-        return tk.StringVar(value="dummy value, TODO: change")
+        return self.export_location
 
+    def set_export_loc(self):
+        # TODO: how to deal with too long path here...
+        self.export_text.set("New folder selected: ")
+
+        path_retrieved = filedialog.askdirectory()
+        # dealing with potential null path again.
+        path_to_set = path_retrieved if os.path.isdir(path_retrieved) else self.export_location.get()
+        self.export_location.set(path_to_set)
 
 
 class DartPanel(ttk.Frame):
     def __init__(self, parent, run_dart_func, file_ext_var, crop_var, export_loc_var):
-        super().__init__(master=parent)
-        self.pack(fill="x", pady=4, ipady=8)
+        super().__init__(master=parent, relief=tk.RIDGE)
+        self.pack(fill="x", padx=10, pady=4, ipady=50)
 
-        self.rowconfigure((0, 1), weight=1)  # simpler way of saying the above
-        self.columnconfigure((0, 1), weight=1)  # simpler way of saying the above
+        self.rowconfigure((0, 1, 2, 3, 4, 5), weight=1)  # simpler way of saying the above
+        self.columnconfigure((0), weight=1)  # simpler way of saying the above
 
         # run DART
         # self.dart_run_button = DartRun()
         self.dart_run_button = ttk.Button(
                 self,
-                text="Run DART",
-                command=lambda: run_dart_func(file_ext_var.get(), crop_var.get(), export_loc_var.get()))
-        self.dart_run_button.pack()
+                text="run DART",
+                command=lambda: run_dart_func(file_ext_var.get(), crop_var.get(), export_loc_var.get()),
+        )
+        self.dart_run_button.grid(row=0, pady=2)
 
-        # TODO: update used on what's happening
+        self.label1 = ttk.Label(self, text="")
+        self.label1.grid(row=1, sticky="w", padx=20)
+        self.label2 = ttk.Label(self, text="")
+        self.label2.grid(row=2, sticky="w", padx=20)
+        self.label3 = ttk.Label(self, text="No process currently running.")
+        self.label3.grid(row=3, padx=2)
+        self.label4 = ttk.Label(self, text="")
+        self.label4.grid(row=4, sticky="w", padx=20)
+        self.label5 = ttk.Label(self, text="")
+        self.label5.grid(row=5, sticky="w", padx=20)
 
+        self.progress_label_list = [self.label1, self.label2, self.label3, self.label4, self.label5]
+
+    # TODO: update used on what's happening
+    def update_label(self, label_num, text):
+        self.progress_label_list[label_num].configure(text=text)
         # TODO: better info display...
 
-### from tut
-class PositionFrame(ttk.Frame):
-    def __init__(self, parent):
-        super().__init__(master=parent)  # Also  fg_color="blue"
-        self.pack(expand=True, fill="both")
-###
-
-
-class ColourFrame(ttk.Frame):
-    def __init__(self, parent):
-        super().__init__(master=parent)  # Also  fg_color="green"
-        self.pack(expand=True, fill="both")
-###
+    def clear_display(self):
+        for label in self.progress_label_list:
+            label.configure(text="")
+            label.grid(sticky="w")
