@@ -29,7 +29,7 @@ class Menu(ttk.Frame):
 
     def display_menu(self, import_dir):
         new_text = ("Please adjust the settings, and when ready, select \"run DART\"." + str(os.linesep) +
-                    "The results will be saved as \"dart_inference_results.csv\".")
+                    "The results will be saved as \"dart_inference_results_[TIMESTAMP].csv\".")
         self.welcome_label.configure(text=new_text)
         # self.label_about_exports = ttk.Label(self, text="The results will be saved as \"dart_inference_results.csv\"")
         # self.label_about_exports.grid(row=4, columnspan=2, sticky="w")

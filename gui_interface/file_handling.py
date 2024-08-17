@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from tkinter import ttk, filedialog
 
@@ -47,9 +48,19 @@ class ResultsExport:
         self.results = results
         self.export_loc = default_export_loc
 
+    def format_time_stamp(self):
+        current_datetime = datetime.now()
+        print(current_datetime)
+        formatted_datetime = (f"_{current_datetime.year}-{current_datetime.month}-{current_datetime.day}_"
+                              f"{current_datetime.hour}-{current_datetime.minute}-{current_datetime.second}")
+
+        return formatted_datetime
+
+
     def export_results(self):
         print('Writing results to file...')
-        with open(os.path.join(self.export_loc, 'dart_inference_results.csv'), 'w') as f:
+        file_name = "dart_inference_results" + self.format_time_stamp() + ".csv"
+        with open(os.path.join(self.export_loc, file_name), 'w') as f:
             f.write('image_path,image_name,FD\n')
             for img_path, img_name, FD in self.results:
                 f.write(f'{img_path}, {img_name}, {FD}\n')
