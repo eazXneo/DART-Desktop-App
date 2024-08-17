@@ -114,7 +114,7 @@ class DartPanel(ttk.Frame):
         super().__init__(master=parent, relief=tk.RIDGE)
         self.pack(fill="x", padx=10, pady=4, ipady=50)
 
-        self.rowconfigure((0, 1, 2, 3, 4, 5), weight=1)  # simpler way of saying the above
+        self.rowconfigure((0, 1, 2, 3, 4, 5, 6), weight=1)  # simpler way of saying the above
         self.columnconfigure((0), weight=1)  # simpler way of saying the above
 
         # run DART
@@ -131,7 +131,7 @@ class DartPanel(ttk.Frame):
         self.label2 = ttk.Label(self, text="")
         self.label2.grid(row=2, sticky="w", padx=20)
         self.label3 = ttk.Label(self, text="No process currently running.")
-        self.label3.grid(row=3, padx=2)
+        self.label3.grid(row=3, padx=20)
         self.label4 = ttk.Label(self, text="")
         self.label4.grid(row=4, sticky="w", padx=20)
         self.label5 = ttk.Label(self, text="")
@@ -139,10 +139,33 @@ class DartPanel(ttk.Frame):
 
         self.progress_label_list = [self.label1, self.label2, self.label3, self.label4, self.label5]
 
+        self.progress_var = tk.DoubleVar(value=0.0)
+
     # TODO: update used on what's happening
     def update_label(self, label_num, text):
         self.progress_label_list[label_num].configure(text=text)
         # TODO: better info display...
+
+    def start_progress(self):
+        self.progress_bar = ttk.Progressbar(
+            self,
+            variable=self.progress_var,
+            maximum=100.0,
+            mode="determinate"
+        )
+        self.progress_bar.grid(row=6, sticky="we", padx=20)
+
+        # self.progress_bar.start()
+
+    def update_progress(self, percentage):
+        current_progress = self.progress_var.get()
+        self.progress_var.set(current_progress+percentage)
+
+    def stop_progress(self):
+        self.progress_bar.stop()
+
+    def reset_progress(self):
+        self.progress_var.set(0.0)
 
     def clear_display(self):
         for label in self.progress_label_list:

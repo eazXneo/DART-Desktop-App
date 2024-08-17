@@ -53,7 +53,7 @@ class DartConnector:
         return self.dart_pipeline
 
 
-    def run_inference_pipeline(self):
+    def run_inference_pipeline(self, update_progress_func, update_screen_func):
         print('\nStarting inference...')
         results = []
         for img_path in self.images:
@@ -61,9 +61,12 @@ class DartConnector:
             img = Image.open(img_path)
             print(f'Inferring {img_path} - Image loaded, running model', end='\r')
             FD = self.dart_pipeline(img)[0]
-            # TODO: move the progress bar along here?
             print(f'{img_path}: {FD}')
             results.append((img_path, Path(img_path).name, FD))
+
+            # update progressbar
+            update_progress_func(80/len(self.images))
+            update_screen_func()
 
         print('Inference complete!')
 

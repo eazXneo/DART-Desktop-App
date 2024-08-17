@@ -1,4 +1,5 @@
 import sys
+import time
 from pathlib import Path
 
 import tkinter as tk
@@ -50,6 +51,8 @@ class App(tk.Tk):
 
         # TODO: Menu greyed out / message.
         self.menu = Menu(self, self.run_dart)
+
+        self.mainloop()
 
     def open_dialog(self):
         path = filedialog.askdirectory()
@@ -104,21 +107,36 @@ class App(tk.Tk):
         assert len(images) > 0, 'No images found'  # TODO: handle this case and tell user
         dart_panel.update_label(0, f"Found {len(images)} images, e.g. {Path(images[0]).name}, ..., {Path(images[-1]).name}")
 
+        dart_panel.start_progress()
+        dart_panel.reset_progress()
+        dart_panel.update_progress(5.0)
+        self.update()
+
         # load pipeline
         pipeline = dart_connector.load_pipeline()
         dart_panel.update_label(1, "Starting inference....")
+        dart_panel.update_progress(10.0)
+        self.update()
 
         # start inference (TODO and pass the progressbar)
-        results = dart_connector.run_inference_pipeline()
+        results = dart_connector.run_inference_pipeline(dart_panel.update_progress, self.update_screen)
         dart_panel.update_label(2, "Writing results to file...")
 
         # write to file
         self.export_results_obj = ResultsExport(results, export_loc)
         self.export_results_obj.export_results()
+        dart_panel.update_progress(5.0)
+        self.update()
 
         # done
         dart_panel.update_label(3, "Done!")
 
         # TODO: Messages + confirmation. (use a canvas?)
+
+        # dart_panel.stop_progress()
+
+    def update_screen(self):
+        self.update()
+
 
 # TODO: all toggles should be one class. (maybe all option settings should be - left right etc.)
