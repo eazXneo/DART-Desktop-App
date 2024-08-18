@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog
 
 from .settings import *
+from .panels import *
 
 
 class Menu(ttk.Frame):
@@ -23,7 +24,21 @@ class Menu(ttk.Frame):
         # TODO: larger and to the left?
         welcome_message = \
                 ("Welcome to DART." + str(os.linesep)
-                + "Please select a folder with images to analyse.")
+                 + "Please select a folder with images to analyse." + str(os.linesep)
+                 + "" + str(os.linesep)
+                 + "" + str(os.linesep)
+                 + "DART uses deep neural network is used predict the output of" + str(os.linesep)
+                 + "an existing pipeline on high quality images from " + str(os.linesep)
+                 + "synthetically degraded versions of these images" + str(os.linesep)
+                 + "More information can be found in the paper: \"Robust and" + str(os.linesep)
+                 + "efficient computation of retinal fractal dimension through " + str(os.linesep)
+                 + "deep approximation\" by Justin Engelmann, " + str(os.linesep)
+                 +  "Ana Villaplana-Velasco, Amos Storkey and Miguel O. Bernabeu" + str(os.linesep)
+                 + "" + str(os.linesep)
+                 + "This application was created to make DART simple to use" + str(os.linesep)
+                 + "with no installation of Python or libraries such as PyTorch" + str(os.linesep)
+                 + "necessary." + str(os.linesep)
+                 )
         self.welcome_label = ttk.Label(self, text=welcome_message)
         self.welcome_label.pack(padx=5, pady=20)
 
@@ -34,9 +49,9 @@ class Menu(ttk.Frame):
         # self.label_about_exports = ttk.Label(self, text="The results will be saved as \"dart_inference_results.csv\"")
         # self.label_about_exports.grid(row=4, columnspan=2, sticky="w")
 
-        self.settings_panel = SettingsPanel(self, import_dir)
+        self.settings_panel = SettingsFrame(self, import_dir)
 
-        self.dart_panel = DartPanel(
+        self.dart_panel = DartFrame(
             self,
             self.run_dart_func,
             self.settings_panel.get_file_extension_var(),
@@ -47,7 +62,7 @@ class Menu(ttk.Frame):
     def get_dart_panel(self):  # TODO seems dodgy what if None?
         return self.dart_panel
 
-class SettingsPanel(ttk.Frame):
+class SettingsFrame(ttk.Frame):
     def __init__(self, parent, default_export_dir):
         super().__init__(master=parent)
         self.pack(fill="x", pady=4, padx=10, ipady=8)
@@ -58,12 +73,14 @@ class SettingsPanel(ttk.Frame):
 
         # widgets
         # File extension
-        # self.label_extension = ttk.Label(self, text="What file extensions do the images have?")
+        self.label_extension = ttk.Label(self, text="What file extensions do the images have?")
         self.label_extension = ttk.Label(self, text="Select the image file extension:")
         self.label_extension.grid(row=0, column=0, sticky="w")
         self.combo_ext_string = tk.StringVar(value=POSSIBLE_IMG_EXTENSIONS[0])
         self.combobox_extensions = ttk.Combobox(self, values=POSSIBLE_IMG_EXTENSIONS, textvariable=self.combo_ext_string)
         self.combobox_extensions.grid(row=0, column=1, sticky="w")
+
+        # self.extension_panel = ExtensionPanel(self)  # TODO !!! HERE
 
         # Crop black borders
         self.label_borders = ttk.Label(self, text="Crop black borders:")
@@ -108,8 +125,10 @@ class SettingsPanel(ttk.Frame):
         path_to_set = path_retrieved if os.path.isdir(path_retrieved) else self.export_location.get()
         self.export_location.set(path_to_set)
 
+    def check_other_ext(self):
+        pass
 
-class DartPanel(ttk.Frame):
+class DartFrame(ttk.Frame):
     def __init__(self, parent, run_dart_func, file_ext_var, crop_var, export_loc_var):
         super().__init__(master=parent, relief=tk.RIDGE)
         self.pack(fill="x", padx=10, pady=4, ipady=50)
@@ -171,3 +190,5 @@ class DartPanel(ttk.Frame):
         for label in self.progress_label_list:
             label.configure(text="")
             label.grid(sticky="w")
+
+

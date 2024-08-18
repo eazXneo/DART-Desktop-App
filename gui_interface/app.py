@@ -4,6 +4,7 @@ from pathlib import Path
 
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image, ImageTk, ImageOps, ImageEnhance, ImageFilter
 
 from .dart_connection import DartConnector
 from .file_handling import *
@@ -24,7 +25,7 @@ class App(tk.Tk):
     def __init__(self):
         # setup
         super().__init__()
-        self.geometry("500x300")
+        self.geometry("600x400")
         self.title("DART interface Version 1.1")
         self.minsize(800, 500)
         self.configure(bg="darkgrey")  # DEBUG: need borders for now
@@ -33,17 +34,12 @@ class App(tk.Tk):
         self.dir_path = None  # TODO: get a better solution...?
 
         # layout
-        self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=10)
+        self.rowconfigure(0, weight=1, uniform="b")
+        self.rowconfigure(1, weight=8, uniform="b")
         self.columnconfigure(0, weight=2, uniform="a")
         self.columnconfigure(1, weight=5, uniform="a")
 
-        # dart banner / title
-        self.banner = ttk.Frame(self)
-        self.banner.grid(row=0, columnspan=2, padx=5, pady=5, sticky='nsew')
-        self.banner_text = ttk.Label(self.banner, text="DART -  Deep Approximation of Retinal Traits",
-                                     font="Courier 24 bold")
-        self.banner_text.pack(pady=10)
+        self.create_banner()
 
         # widgets  # TODO: create_widgets() for all below perhaps more intuitive
         # Import (Frame + Button)
@@ -52,7 +48,32 @@ class App(tk.Tk):
         # TODO: Menu greyed out / message.
         self.menu = Menu(self, self.run_dart)
 
-        self.mainloop()
+        # self.mainloop()
+
+    def create_banner(self):  # TODO: fix these hard-coded values!!!
+        # dart banner / title
+        self.banner_canvas = tk.Canvas(self, background="white", height=50)
+        self.banner_canvas.grid(row=0, columnspan=2, padx=5, pady=5, sticky='nsew')
+        # self.banner_text = ttk.Label(self.banner, text="DART -  Deep Approximation of Retinal Traits",
+        #                              font="Courier 24 bold")
+        # self.banner_text.pack(pady=10)
+
+        # canvas_width = self.banner_canvas.info
+        # canvas_height =
+
+        # print("")
+
+        # place banner to the left-ish side?
+        self.image = Image.open(os.path.join(os.getcwd(), 'gui_interface', "banner.png"))
+
+        self.image_ratio = self.image.size[0] / self.image.size[1]
+
+        self.image_height = int(400/8)
+        self.image_width = int(self.image_height * self.image_ratio)
+        resized_image = self.image.resize((self.image_width, self.image_height))
+        self.image_tk = ImageTk.PhotoImage(resized_image)
+
+        self.banner_canvas.create_image(4, 0, image=self.image_tk, anchor="nw")
 
     def open_dialog(self):
         path = filedialog.askdirectory()
