@@ -3,6 +3,8 @@ from datetime import datetime
 
 from tkinter import ttk, filedialog
 
+from .settings import DEFAULT_FILE_NAME
+
 
 # TODO: use inheritance if also indiv file import as well.
 class DirImport(ttk.Frame):
@@ -35,7 +37,7 @@ class DirImport(ttk.Frame):
     def update_folder_selected(self, folder_path):
         path_split = folder_path.split(str(os.sep))
         print("path split: ", path_split)
-        path_split = [dir for dir in path_split if dir!=""]
+        path_split = [dir for dir in path_split if dir != ""]
         new_text = str(os.linesep) + "    root"
         for dir in path_split:
             new_text += " " + str(os.linesep) + "|_ " + dir
@@ -44,9 +46,10 @@ class DirImport(ttk.Frame):
 
 # TODO decide whether utility class, or more Tkinter related as a frame.
 class ResultsExport:
-    def __init__(self, results, default_export_loc):
+    def __init__(self, results, default_export_loc, filename):
         self.results = results
         self.export_loc = default_export_loc
+        self.filename = filename
 
     def format_time_stamp(self):
         current_datetime = datetime.now()
@@ -56,10 +59,13 @@ class ResultsExport:
 
         return formatted_datetime
 
-
     def export_results(self):
+        if self.filename == DEFAULT_FILE_NAME or self.filename == "":
+            # file_name = "dart_inference_results" + self.format_time_stamp() + ".csv"
+            file_name = "dart_inference_results" + ".csv"
+        else:
+            file_name = self.filename + ".csv"
         print('Writing results to file...')
-        file_name = "dart_inference_results" + self.format_time_stamp() + ".csv"
         with open(os.path.join(self.export_loc, file_name), 'w') as f:
             f.write('image_path,image_name,FD\n')
             for img_path, img_name, FD in self.results:

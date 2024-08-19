@@ -37,8 +37,8 @@ class DartConnector:
         print(f'Looking for images in {self.img_folder} with extension {self.img_ext}')
         self.images = list(glob.glob(self.img_folder + f'/*.{self.img_ext}'))
 
-        assert len(self.images) > 0, 'No images found'
-        print(f'Found {len(self.images)} images, e.g. {Path(self.images[0]).name}, ..., {Path(self.images[-1]).name}')
+        # assert len(self.images) > 0, 'No images found'
+        # print(f'Found {len(self.images)} images, e.g. {Path(self.images[0]).name}, ..., {Path(self.images[-1]).name}')
 
         return self.images
 

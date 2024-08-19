@@ -9,6 +9,7 @@ from PIL import Image, ImageTk, ImageOps, ImageEnhance, ImageFilter
 from .dart_connection import DartConnector
 from .file_handling import *
 from .menu import Menu
+from .settings import *
 
 
 # TODO: relpath saving? 1
@@ -102,17 +103,24 @@ class App(tk.Tk):
             self.menu.display_menu(self.dir_path)
 
     # TODO: potentially put this is the function in dart_connection.py
-    def run_dart(self, file_ext, crop_borders, export_loc):
+    def run_dart(self, file_ext, crop_borders, export_loc, user_ext, filename):
         dart_panel = self.menu.get_dart_panel()
         assert dart_panel is not None, "fix code structure around menu panels."
 
         dart_panel.clear_display()
 
+        # verify extension typed in:
+        is_valid = self.verify_extension(file_ext, user_ext)
+        if not is_valid:
+            dart_panel.update_label(2, "The entered file extension is not supported.")
+
+            return
+
         # DEBUG
         print("-- run dart function --")  # DEBUG
         # TODO: get rid of the "." in the file extension name
         print("> Import path: ", self.dir_path)  # DEBUG
-        file_ext = file_ext[1:]
+        file_ext = is_valid[1:]
         print("> File extension: ", file_ext)  # DEBUG
         # crop_borders = "yes" if crop_borders else "no"
         print("> Crop borders: ", crop_borders)  # DEBUG
@@ -125,7 +133,12 @@ class App(tk.Tk):
 
         # found images.
         images = dart_connector.find_images()
-        assert len(images) > 0, 'No images found'  # TODO: handle this case and tell user
+        # assert len(images) > 0, 'No images found'  # TODO: handle this case and tell user
+        if len(images) < 1:
+            dart_panel.update_label(2, "No images found.")
+
+            return
+
         dart_panel.update_label(0, f"Found {len(images)} images, e.g. {Path(images[0]).name}, ..., {Path(images[-1]).name}")
 
         dart_panel.start_progress()
@@ -144,7 +157,7 @@ class App(tk.Tk):
         dart_panel.update_label(2, "Writing results to file...")
 
         # write to file
-        self.export_results_obj = ResultsExport(results, export_loc)
+        self.export_results_obj = ResultsExport(results, export_loc, filename)
         self.export_results_obj.export_results()
         dart_panel.update_progress(5.0)
         self.update()
@@ -155,6 +168,19 @@ class App(tk.Tk):
         # TODO: Messages + confirmation. (use a canvas?)
 
         # dart_panel.stop_progress()
+
+    def verify_extension(self, file_ext, user_ext):
+        # check with a "." and without a "."
+        # modified_ext_list = [s[1:] for s in ALL_PILLOW_EXTENSIONS]
+
+        if file_ext in ALL_PILLOW_EXTENSIONS:
+            return file_ext
+        elif user_ext in ALL_PILLOW_EXTENSIONS:
+            return user_ext
+        elif ("."+user_ext) in ALL_PILLOW_EXTENSIONS:
+            return ("." + user_ext)
+
+        return False
 
     def update_screen(self):
         self.update()

@@ -43,8 +43,9 @@ class Menu(ttk.Frame):
         self.welcome_label.pack(padx=5, pady=20)
 
     def display_menu(self, import_dir):
-        new_text = ("Please adjust the settings, and when ready, select \"run DART\"." + str(os.linesep) +
-                    "The results will be saved as \"dart_inference_results_[TIMESTAMP].csv\".")
+        new_text = ("Please adjust the settings, and when ready, select \"run DART\"."
+                    # + str(os.linesep) + "The results will be saved as \"dart_inference_results_[TIMESTAMP].csv\"."
+                    )
         self.welcome_label.configure(text=new_text)
         # self.label_about_exports = ttk.Label(self, text="The results will be saved as \"dart_inference_results.csv\"")
         # self.label_about_exports.grid(row=4, columnspan=2, sticky="w")
@@ -54,9 +55,11 @@ class Menu(ttk.Frame):
         self.dart_panel = DartFrame(
             self,
             self.run_dart_func,
-            self.settings_panel.get_file_extension_var(),
+            self.settings_panel.get_sys_extension_var(),
             self.settings_panel.get_crop_bool_var(),
-            self.settings_panel.get_export_location_var()
+            self.settings_panel.get_export_location_var(),
+            self.settings_panel.get_user_extension_var(),
+            self.settings_panel.get_user_filename()
         )
 
     def get_dart_panel(self):  # TODO seems dodgy what if None?
@@ -67,20 +70,21 @@ class SettingsFrame(ttk.Frame):
         super().__init__(master=parent)
         self.pack(fill="x", pady=4, padx=10, ipady=8)
 
-        self.rowconfigure((0, 1, 2, 3, 4), weight=1)
+        self.rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=2)
 
         # widgets
         # File extension
-        self.label_extension = ttk.Label(self, text="What file extensions do the images have?")
-        self.label_extension = ttk.Label(self, text="Select the image file extension:")
-        self.label_extension.grid(row=0, column=0, sticky="w")
-        self.combo_ext_string = tk.StringVar(value=POSSIBLE_IMG_EXTENSIONS[0])
-        self.combobox_extensions = ttk.Combobox(self, values=POSSIBLE_IMG_EXTENSIONS, textvariable=self.combo_ext_string)
-        self.combobox_extensions.grid(row=0, column=1, sticky="w")
+        # self.label_extension = ttk.Label(self, text="What file extensions do the images have?")
+        # self.label_extension = ttk.Label(self, text="Select the image file extension:")
+        # self.label_extension.grid(row=0, column=0, sticky="w")
+        self.system_ext_string = tk.StringVar(value=POSSIBLE_IMG_EXTENSIONS[0])
+        # self.combobox_extensions = ttk.Combobox(self, values=POSSIBLE_IMG_EXTENSIONS, textvariable=self.system_ext_string)
+        # self.combobox_extensions.grid(row=0, column=1, sticky="w")
+        self.user_ext_string = tk.StringVar()
 
-        # self.extension_panel = ExtensionPanel(self)  # TODO !!! HERE
+        self.extension_panel = FileExtensionPanel(self, self.system_ext_string, self.user_ext_string)  # TODO !!! HERE
 
         # Crop black borders
         self.label_borders = ttk.Label(self, text="Crop black borders:")
@@ -96,9 +100,16 @@ class SettingsFrame(ttk.Frame):
         self.export_btn = ttk.Button(master=self, text="select results folder", command=self.set_export_loc)  # TODO: set command
         self.export_btn.grid(row=2, column=1, sticky="w")
 
-        # TODO: Which folder is selected?
+        # file name
+        self.label_filename = ttk.Label(self, text="Enter results file name:")
+        self.label_filename.grid(row=3, column=0, sticky="w")
+        self.user_filename = tk.StringVar(value=DEFAULT_FILE_NAME)
+        self.entry_filename = ttk.Entry(master=self, textvariable=self.user_filename)
+        self.entry_filename.grid(row=3, column=1, sticky="w")
+
+        # Export folder
         self.export_frame = ttk.Frame(self)
-        self.export_frame.grid(row=3, columnspan=2, sticky="w", ipadx=10)
+        self.export_frame.grid(row=4, columnspan=2, sticky="w", ipadx=10)
         self.export_text = tk.StringVar(value=f"Default export location selected: ")
         self.export_location = tk.StringVar(value=default_export_dir)
         self.label_export_text = ttk.Label(self.export_frame, textvariable=self.export_text)
@@ -106,8 +117,14 @@ class SettingsFrame(ttk.Frame):
         self.label_folder_selected = ttk.Label(self.export_frame, textvariable=self.export_location)
         self.label_folder_selected.pack(side="left")
 
-    def get_file_extension_var(self):
-        return self.combo_ext_string
+    def get_user_filename(self):
+        return self.user_filename
+
+    def get_sys_extension_var(self):
+        return self.system_ext_string
+
+    def get_user_extension_var(self):
+        return self.user_ext_string
 
     def get_crop_bool_var(self):
         return self.check_borders_bool
@@ -129,7 +146,7 @@ class SettingsFrame(ttk.Frame):
         pass
 
 class DartFrame(ttk.Frame):
-    def __init__(self, parent, run_dart_func, file_ext_var, crop_var, export_loc_var):
+    def __init__(self, parent, run_dart_func, file_ext_var, crop_var, export_loc_var, user_ext_var, filename_var):
         super().__init__(master=parent, relief=tk.RIDGE)
         self.pack(fill="x", padx=10, pady=4, ipady=50)
 
@@ -141,7 +158,7 @@ class DartFrame(ttk.Frame):
         self.dart_run_button = ttk.Button(
                 self,
                 text="run DART",
-                command=lambda: run_dart_func(file_ext_var.get(), crop_var.get(), export_loc_var.get()),
+                command=lambda: run_dart_func(file_ext_var.get(), crop_var.get(), export_loc_var.get(), user_ext_var.get(), filename_var.get()),
         )
         self.dart_run_button.grid(row=0, pady=2)
 
@@ -191,4 +208,4 @@ class DartFrame(ttk.Frame):
             label.configure(text="")
             label.grid(sticky="w")
 
-
+        self.reset_progress()
