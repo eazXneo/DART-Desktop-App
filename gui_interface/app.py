@@ -65,7 +65,7 @@ class App(tk.Tk):
         # print("")
 
         # place banner to the left-ish side?
-        self.image = Image.open(os.path.join(os.getcwd(), 'gui_interface', "banner.png"))
+        self.image = Image.open(os.path.join(os.getcwd(), "gui_interface/banner.png"))
 
         self.image_ratio = self.image.size[0] / self.image.size[1]
 

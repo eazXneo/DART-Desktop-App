@@ -244,3 +244,5 @@ fabric.properties
 
 # files generated during testing
 /dart_inference_results.csv
+
+# test data
