@@ -34,25 +34,17 @@ jobs:
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         # brew install python-tk@3.10
-        brew update
-        brew install tcl-tk
-        echo 'export PATH="/usr/local/opt/tcl-tk/bin:$PATH"' >> ~/.zshrc
-        export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
-        export CPPFLAGS="-I/usr/local/opt/tcl-tk/include"
-        export PKG_CONFIG_PATH="/usr/local/opt/tcl-tk/lib/pkgconfig"
-        brew install pyenv --head
-        python --version >> py_ver
-        sed -i '' "s/Python //g" py_ver
-        export PY_VER="$( cat py_ver )"
-        env \
-        PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
-        LDFLAGS="-L$(brew --prefix tcl-tk)/lib" \
-        CPPFLAGS="-I$(brew --prefix tcl-tk)/include" \
-        PKG_CONFIG_PATH="$(brew --prefix tcl-tk)/lib/pkgconfig" \
-        CFLAGS="-I$(brew --prefix tcl-tk)/include" \
+        # Install necessary system packages:
+        brew install tcl-tk openssl readline sqlite3 xz zlib
+        # Uninstall the current version
+        export PY_VER=$(python --version | cut -d " " -f 2)    
+        pyenv uninstall $(echo $PY_VER)
+        # Link the correct versions of Tcl/Tk
+        env LDFLAGS="-L$(brew --prefix openssl@1.1)/lib -L$(brew --prefix readline)/lib -L$(brew --prefix sqlite3)/lib -L$(brew --prefix xz)/lib -L$(brew --prefix zlib)/lib -L$(brew --prefix tcl-tk)/lib" \
+        CPPFLAGS="-I$(brew --prefix openssl@1.1)/include -I$(brew --prefix readline)/include -I$(brew --prefix sqlite3)/include -I$(brew --prefix xz)/include -I$(brew --prefix zlib)/include -I$(brew --prefix tcl-tk)/include" \
+        PKG_CONFIG_PATH="$(brew --prefix openssl@1.1)/lib/pkgconfig:$(brew --prefix readline)/lib/pkgconfig:$(brew --prefix sqlite3)/lib/pkgconfig:$(brew --prefix xz)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig:$(brew --prefix tcl-tk)/lib/pkgconfig" \
         PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$(brew --prefix tcl-tk)/include' --with-tcltk-libs='-L$(brew --prefix tcl-tk)/lib -ltcl8.6 -ltk8.6'" \
-        pyenv install $PY_VER
-        pyenv global $PY_VER
+        pyenv install $(echo $PY_VER)
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
