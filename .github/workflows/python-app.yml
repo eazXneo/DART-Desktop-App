@@ -33,7 +33,26 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        brew install python-tk@3.10
+        # brew install python-tk@3.10
+        brew update
+        brew install tcl-tk
+        echo 'export PATH="/usr/local/opt/tcl-tk/bin:$PATH"' >> ~/.zshrc
+        export LDFLAGS="-L/usr/local/opt/tcl-tk/lib"
+        export CPPFLAGS="-I/usr/local/opt/tcl-tk/include"
+        export PKG_CONFIG_PATH="/usr/local/opt/tcl-tk/lib/pkgconfig"
+        brew install pyenv --head
+        python --version >> py_ver
+        sed -i '' "s/Python //g" py_ver
+        export PY_VER="$( cat py_ver )"
+        env \
+        PATH="$(brew --prefix tcl-tk)/bin:$PATH" \
+        LDFLAGS="-L$(brew --prefix tcl-tk)/lib" \
+        CPPFLAGS="-I$(brew --prefix tcl-tk)/include" \
+        PKG_CONFIG_PATH="$(brew --prefix tcl-tk)/lib/pkgconfig" \
+        CFLAGS="-I$(brew --prefix tcl-tk)/include" \
+        PYTHON_CONFIGURE_OPTS="--with-tcltk-includes='-I$(brew --prefix tcl-tk)/include' --with-tcltk-libs='-L$(brew --prefix tcl-tk)/lib -ltcl8.6 -ltk8.6'" \
+        pyenv install $PY_VER
+        pyenv global $PY_VER
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
