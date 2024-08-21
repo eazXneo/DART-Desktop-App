@@ -8,7 +8,7 @@ import pandas as pd
 
 from gui_interface.app import App
 from gui_interface.looping_over_images_in_folder_for_testing import run_original_dart_script
-from mock_user_input import *
+from tests.mock_user_input import *
 from pathlib import Path
 
 # def test_always_passes():
