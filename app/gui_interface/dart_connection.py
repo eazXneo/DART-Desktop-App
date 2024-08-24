@@ -3,7 +3,7 @@ from pathlib import Path
 import glob
 from PIL import Image
 
-import dart.inference as dart
+import app.dart.inference as dart
 from .settings import CROP_THRESHOLD
 
 def prompt_for_bool(prompt):
@@ -27,8 +27,8 @@ class DartConnector:
 
         ### TODO: overwrite / create new files rather than complaining
         # check if dart_inference_results.csv exists
-        assert not os.path.exists(os.path.join(export_loc, 'dart_inference_results.csv')), \
-            'ERROR: dart_inference_results.csv already exists. Please delete \ rename it before running this script.'
+        # assert not os.path.exists(os.path.join(export_loc, 'dart_inference_results.csv')), \
+        #     'ERROR: dart_inference_results.csv already exists. Please delete \ rename it before running this script.'
 
     def find_images(self):
         # crop_black_borders = prompt_for_bool('Do you want to crop black borders from your images? (yes/no): ')

@@ -17,7 +17,7 @@ def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
     except Exception:
-        base_path = os.path.abspath(".")
+        base_path = os.path.abspath("")
 
     return os.path.join(base_path, relative_path)
 
@@ -65,7 +65,7 @@ class App(tk.Tk):
         # print("")
 
         # place banner to the left-ish side?
-        self.image = Image.open(os.path.join(os.getcwd(), "gui_interface/banner.png"))
+        self.image = Image.open(resource_path("gui_interface/banner.png")) # TODO: relpath saving? 2
 
         self.image_ratio = self.image.size[0] / self.image.size[1]
 
