@@ -1,15 +1,6 @@
-from gui_interface.app import App
-
-# TODO WIT, splashscreen 1
-# if getattr(sys, "frozen", False):
-#     import pyi_splash
+from gui_interface import app
 
 
 if __name__ == "__main__":
-    app = App()
-
-    # # TODO WIT, splashscreen 1
-    # if getattr(sys, "frozen", False):
-    #     pyi_splash.close()
-
-    app.mainloop()
+    application = app.App()
+    application.mainloop()
