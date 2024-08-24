@@ -3,7 +3,7 @@ from pathlib import Path
 import glob
 from PIL import Image
 
-import app.dart.inference as dart
+import src.dart.inference as dart
 from .settings import CROP_THRESHOLD
 
 def prompt_for_bool(prompt):
@@ -18,7 +18,7 @@ class DartConnector:
 
     # TODO: _run_checks() and then run_dart() for the inference pipeline (run_once() vs run_batched())?
 
-    # TODO: return results as list to app.py so that it can delegate results.csv creation to other
+    # TODO: return results as list to src.py so that it can delegate results.csv creation to other
     def __init__(self, img_folder, img_ext, crop_black_borders, export_loc):
         self.img_folder = img_folder
         self.img_ext = img_ext

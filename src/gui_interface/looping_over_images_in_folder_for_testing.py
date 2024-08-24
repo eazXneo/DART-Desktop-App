@@ -4,7 +4,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import app.dart.inference as dart
+import src.dart.inference as dart
 from PIL import Image
 import glob
 from pathlib import Path

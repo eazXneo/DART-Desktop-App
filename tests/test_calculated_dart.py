@@ -6,8 +6,8 @@ import random
 import tempfile
 import pandas as pd
 
-from app.gui_interface.app import App
-from app.gui_interface.looping_over_images_in_folder_for_testing import run_original_dart_script
+from src.gui_interface.app import App
+from src.gui_interface.looping_over_images_in_folder_for_testing import run_original_dart_script
 from tests.mock_user_input import *
 
 # def test_always_passes():
@@ -55,7 +55,7 @@ def application(setup_data):
 
 @pytest.fixture
 def run_gui_dart(application):
-    # if possible, hook into the app.run_dart function.
+    # if possible, hook into the src.run_dart function.
     # run dart from there
 
     app = application
