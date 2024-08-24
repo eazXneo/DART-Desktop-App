@@ -1,6 +1,6 @@
-from gui_interface import app
+from src.gui_interface.app import App
 
 
 if __name__ == "__main__":
-    application = app.App()
+    application = App()
     application.mainloop()

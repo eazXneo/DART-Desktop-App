@@ -3,7 +3,7 @@ from pathlib import Path
 import glob
 from PIL import Image
 
-import dart.inference as dart
+import src.dart.inference as dart
 from .settings import CROP_THRESHOLD
 
 def prompt_for_bool(prompt):
