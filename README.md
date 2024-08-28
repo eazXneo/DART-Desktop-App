@@ -8,12 +8,12 @@ From the [DART repository](https://github.com/justinengelmann/DART_retinal_fract
 
 ## Quick start
 
-### Details 
-The interface itself was developed using tkinter following Object-Oriented Programming practices. tkinter was chosen due to its relative simplicity as a framework and easy to learn.
-- Tkinter and OOP
+## Implementation details 
+The interface itself was developed using tkinter following Object-Oriented Programming practices. tkinter was chosen due to its relative simplicity and being easy to learn. It suited the needs of this project to create a straightforward interface with native UI elements.
+
+Testing was conducted to compare output from running the model directly vs using the interface. Passing tests indicate the result values generated when using the interface are acceptably close or identical compared with the values obtained from running the model by itself. Retinal scans from the [GRAPE dataset](https://springernature.figshare.com/articles/dataset/GRAPE_dataset_CFPs/23575926?backTo=%2Fcollections%2FGRAPE_A_multi-modal_glaucoma_dataset_of_follow-up_visual_field_and_fundus_images_for_glaucoma_management%2F6406319&file=41358156) were used as test data.
 - testing
 - screenshots
 - gif
 ## Ackowledgements
-Test data used: [GRAPE dataset](https://springernature.figshare.com/articles/dataset/GRAPE_dataset_CFPs/23575926?backTo=%2Fcollections%2FGRAPE_A_multi-modal_glaucoma_dataset_of_follow-up_visual_field_and_fundus_images_for_glaucoma_management%2F6406319&file=41358156)
 Special thanks to [@justinengelmann](https://github.com/justinengelmann) for advice and feedback on this project.
