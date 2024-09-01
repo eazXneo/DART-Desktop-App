@@ -12,12 +12,14 @@ From the [DART repository](https://github.com/justinengelmann/DART_retinal_fract
 2. Select the latest release and download either the Windows or MacOS .zip file.
 
 On **MacOS**:
-3. After downloading the zip and opening the file you will see a folder with a folder and an application both named "DART interface 1_1_3".
+
+4. After downloading the zip and opening the file you will see a folder with a folder and an application both named "DART interface 1_1_3".
 4. On first time opening the application you might have to right-click and then select "open"
 ![macOS warning open first time](.github/art/warning_mac.png)
 5. After this, you should be able to open and run the application normally!
 
 On **Windows**:
+
 3. After downloading and opening the zip file you will see a folder called "main"
 4. After opening this folder, you will see an application, also called "main"
 5. This is the DART application. Opening this file for the first time you will have to extract all remaining files first.
