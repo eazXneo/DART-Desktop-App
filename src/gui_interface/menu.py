@@ -9,7 +9,7 @@ from .panels import *
 class Menu(ttk.Frame):
     def __init__(self, parent, run_dart_func):
         super().__init__(master=parent)
-        self.grid(row=1, column=1,  padx=1, pady=5, sticky="nsew")
+        self.grid(row=1, column=1,  padx=5, pady=5, sticky="nsew")
 
         self.run_dart_func = run_dart_func
 
@@ -26,9 +26,9 @@ class Menu(ttk.Frame):
                 ("Welcome to DART!" + str(os.linesep)
                  + "Please select a folder with images to analyse." + str(os.linesep)
                  + "" + str(os.linesep)
-                 + "DART uses deep neural network is used predict the output of" + str(os.linesep)
+                 + "DART uses a deep neural network to predict the output of" + str(os.linesep)
                  + "an existing pipeline on high quality images from " + str(os.linesep)
-                 + "synthetically degraded versions of these images" + str(os.linesep)
+                 + "synthetically degraded versions of these images." + str(os.linesep)
                  + "More information can be found in the paper: \"Robust and" + str(os.linesep)
                  + "efficient computation of retinal fractal dimension through " + str(os.linesep)
                  + "deep approximation\" by Justin Engelmann, " + str(os.linesep)
