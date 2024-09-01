@@ -11,15 +11,20 @@ From the [DART repository](https://github.com/justinengelmann/DART_retinal_fract
 1. Head to this project's [Releases](https://github.com/eazXneo/DART-Desktop-App/releases).
 2. Select the latest release and download either the Windows or MacOS .zip file.
 
-On Mac:
-3. 
+On **MacOS**:
+3. After downloading the zip and opening the file you will see a folder with a folder and an application both named "DART interface 1_1_3".
+4. On first time opening the application you might have to right-click and then select "open"
+![macOS warning open first time](.github/art/warning_mac.png)
+5. After this, you should be able to open and run the application normally!
 
-On Windows:
-3. After downloading the zip file you will see a folder called "main"
+On **Windows**:
+3. After downloading and opening the zip file you will see a folder called "main"
 4. After opening this folder, you will see an application, also called "main"
 5. This is the DART application. Opening this file for the first time you will have to extract all remaining files first.
 ![Windows run first time](.github/art/first%20time%20extracting%20files%20on%20Windows.png)
 6. Now you can open and use the application!
+
+Please note that on a Windows machine, the "main" application must remain in its original folder to run correctly.
 
 ## Implementation details 
 The interface itself was developed using tkinter following Object-Oriented Programming practices. tkinter was chosen due to its relative simplicity and being easy to learn. It suited the needs of this project to create a straightforward interface with native UI elements.

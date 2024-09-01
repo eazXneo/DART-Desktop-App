@@ -1,0 +1,1 @@
+pyinstaller main.py --add-data "/Users/neo/Documents/10ML/directory_traversing/src/dart/models.py:dart" --hidden-import=timm.models.layers.attention_pool2d --add-data "/Users/neo/Documents/10ML/directory_traversing/src/gui_interface/banner.png:gui_interface" --name "DART interface 1_1_3" --windowed
