@@ -15,7 +15,9 @@ On **MacOS**:
 
 3. After downloading the zip and opening the file you will see a folder with a folder and an application both named "DART interface 1_1_3".
 4. On first time opening the application you might have to right-click and then select "open"
+
 <img src=".github/art/warning_mac.png" width="350">
+
 5. After this, you should be able to open and run the application normally!
 
 On **Windows**:
