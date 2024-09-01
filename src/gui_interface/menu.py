@@ -9,7 +9,7 @@ from .panels import *
 class Menu(ttk.Frame):
     def __init__(self, parent, run_dart_func):
         super().__init__(master=parent)
-        self.grid(row=1, column=1,  padx=5, pady=5, sticky="nsew")
+        self.grid(row=1, column=1,  padx=1, pady=5, sticky="nsew")
 
         self.run_dart_func = run_dart_func
 
@@ -23,9 +23,8 @@ class Menu(ttk.Frame):
     def display_welcome(self):
         # TODO: larger and to the left?
         welcome_message = \
-                ("Welcome to DART." + str(os.linesep)
+                ("Welcome to DART!" + str(os.linesep)
                  + "Please select a folder with images to analyse." + str(os.linesep)
-                 + "" + str(os.linesep)
                  + "" + str(os.linesep)
                  + "DART uses deep neural network is used predict the output of" + str(os.linesep)
                  + "an existing pipeline on high quality images from " + str(os.linesep)
@@ -33,14 +32,13 @@ class Menu(ttk.Frame):
                  + "More information can be found in the paper: \"Robust and" + str(os.linesep)
                  + "efficient computation of retinal fractal dimension through " + str(os.linesep)
                  + "deep approximation\" by Justin Engelmann, " + str(os.linesep)
-                 +  "Ana Villaplana-Velasco, Amos Storkey and Miguel O. Bernabeu" + str(os.linesep)
+                 +  "Ana Villaplana-Velasco, Amos Storkey and Miguel O. Bernabeu." + str(os.linesep)
                  + "" + str(os.linesep)
-                 + "This application was created to make DART simple to use" + str(os.linesep)
-                 + "with no installation of Python or libraries such as PyTorch" + str(os.linesep)
-                 + "necessary." + str(os.linesep)
+                 + "This application was created to make DART simple to use with" + str(os.linesep)
+                 + "no installation of Python or libraries such as PyTorch necessary." + str(os.linesep)
                  )
         self.welcome_label = ttk.Label(self, text=welcome_message)
-        self.welcome_label.pack(padx=5, pady=20)
+        self.welcome_label.pack(padx=1, pady=15)
 
     def display_menu(self, import_dir):
         new_text = ("Please adjust the settings, and when ready, select \"run DART\"."

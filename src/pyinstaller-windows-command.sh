@@ -1,0 +1,1 @@
+pyinstaller main.py --add-data "C:\Users\kandr\Documents\LEA\DART-Desktop-App\src\gui_interface\banner.png:gui_interface" --add-data "C:\Users\kandr\Documents\LEA\DART-Desktop-App\src\dart\models.py:dart" --hidden-import=timm.models.layers.attention_pool2d

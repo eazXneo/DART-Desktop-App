@@ -35,7 +35,8 @@ class DirImport(ttk.Frame):
         self.import_dir_func(path)
 
     def update_folder_selected(self, folder_path):
-        path_split = folder_path.split(str(os.sep))
+        print("path sep:", str(os.sep))
+        path_split = folder_path.split("/")
         print("path split: ", path_split)
         path_split = [dir for dir in path_split if dir != ""]
         new_text = str(os.linesep) + "    root"
