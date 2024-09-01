@@ -13,7 +13,7 @@ From the [DART repository](https://github.com/justinengelmann/DART_retinal_fract
 
 On **MacOS**:
 
-4. After downloading the zip and opening the file you will see a folder with a folder and an application both named "DART interface 1_1_3".
+3. After downloading the zip and opening the file you will see a folder with a folder and an application both named "DART interface 1_1_3".
 4. On first time opening the application you might have to right-click and then select "open"
 ![macOS warning open first time](.github/art/warning_mac.png)
 5. After this, you should be able to open and run the application normally!
