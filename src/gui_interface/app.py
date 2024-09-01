@@ -100,9 +100,14 @@ class App(tk.Tk):
             # TODO: probably just un-block the menu...
             self.menu.grid_forget()
             self.menu = Menu(self, self.run_dart)
-            self.menu.display_menu(self.dir_path)
+            desktop_dir = Path.home() / 'Desktop'
+            if os.path.isdir(desktop_dir):
+                self.menu.display_menu(desktop_dir)  # TODO: changing to Desktop?
+            # if this path doesn't exist, then just the import path
+            else:
+                self.menu.display_menu(self.dir_path)
 
-    # TODO: potentially put this is the function in dart_connection.py
+                # TODO: potentially put this is the function in dart_connection.py
     def run_dart(self, file_ext, crop_borders, export_loc, user_ext, filename):
         dart_panel = self.menu.get_dart_panel()
         assert dart_panel is not None, "fix code structure around menu panels."
