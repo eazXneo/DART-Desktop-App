@@ -5,7 +5,7 @@ from tkinter import ttk, filedialog
 from .settings import *
 from .panels import *
 
-
+# TODO: all toggles should be one class. (maybe all option settings should be - left right etc.)
 class Menu(ttk.Frame):
     def __init__(self, parent, run_dart_func):
         super().__init__(master=parent)

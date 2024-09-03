@@ -38,6 +38,6 @@ On **Windows**:
 Please note that on a Windows machine, the "main" application must remain in its original folder to run correctly.
 
 ## Ackowledgements
-Special thanks to [@justinengelmann](https://github.com/justinengelmann) for advice and feedback on this project.
+Special thanks to Prof. Keane and [@justinengelmann](https://github.com/justinengelmann) for advice and feedback on this project.
 
 ![basic run using DART Desktop app](.github/art/splash_screen.gif)

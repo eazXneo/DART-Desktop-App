@@ -3,7 +3,7 @@ from datetime import datetime
 
 from tkinter import ttk, filedialog
 
-from .settings import DEFAULT_FILE_NAME
+from .settings import DEFAULT_FILE_NAME, ALL_PILLOW_EXTENSIONS
 
 
 # TODO: use inheritance if also indiv file import as well.
@@ -75,3 +75,14 @@ class ResultsExport:
         print('Created dart_inference_results.csv')
 
         print('Done!')
+
+
+def verify_extension(file_ext, user_ext):
+    if file_ext in ALL_PILLOW_EXTENSIONS:
+        return file_ext
+    elif user_ext in ALL_PILLOW_EXTENSIONS:
+        return user_ext
+    elif ("." + user_ext) in ALL_PILLOW_EXTENSIONS:
+        return "." + user_ext
+
+    return False
