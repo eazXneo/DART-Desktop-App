@@ -1,3 +1,5 @@
+# TODO: move to the testing folder
+
 # temporarily append the parent directory to the path
 import sys
 import os

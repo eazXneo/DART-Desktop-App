@@ -48,6 +48,10 @@ class DirImport(ttk.Frame):
 
 # TODO decide whether utility class, or more Tkinter related as a frame.
 class ResultsExport:
+    """
+    Handles creating new files (for the results)
+    """
+
     def __init__(self, results, default_export_loc, filename):
         self.results = results
         self.export_loc = default_export_loc
