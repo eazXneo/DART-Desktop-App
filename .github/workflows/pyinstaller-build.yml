@@ -5,11 +5,7 @@ name: Build
 #    tags:
 #      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: workflow_dispatch
 
 jobs:
   pyinstaller-build:
@@ -21,7 +17,8 @@ jobs:
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: enter src folder
-        run: cd src
+        run: | 
+          cd src
       - name: Create Executable
         run: |
           pyinstaller ../misc/gh.spec
