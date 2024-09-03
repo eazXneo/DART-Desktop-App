@@ -31,4 +31,4 @@ jobs:
     - name: Create Executable
       run: |
         cd src
-        pyinstaller ../misc/gh.spec
+        pyinstaller gh.spec
