@@ -28,14 +28,15 @@ class DirImport(ttk.Frame):
         self.no_files_selected = ttk.Label(self, text="No folder selected.")
         self.no_files_selected.pack(padx=5, pady=5)
 
-    # TODO: BUG: when cancel on img.dir dialog selected,
-    #  then button disappears but program thinks something is selected
     def open_dialog(self):
         path = filedialog.askdirectory()
         self.import_dir_func(path)
 
     def update_folder_selected(self, folder_path):
-        print("path sep:", str(os.sep))
+        """
+        Updates the display on the left panel with which folder is selected.
+        """
+
         path_split = folder_path.split("/")
         print("path split: ", path_split)
         path_split = [dir for dir in path_split if dir != ""]
@@ -53,6 +54,10 @@ class ResultsExport:
         self.filename = filename
 
     def format_time_stamp(self):
+        """
+        Create a filename with a timestamp
+        """
+
         current_datetime = datetime.now()
         print(current_datetime)
         formatted_datetime = (f"_{current_datetime.year}-{current_datetime.month}-{current_datetime.day}_"
@@ -61,8 +66,11 @@ class ResultsExport:
         return formatted_datetime
 
     def export_results(self):
+        """
+        Create the results file.
+        """
+
         if self.filename == DEFAULT_FILE_NAME or self.filename == "":
-            # file_name = "dart_inference_results" + self.format_time_stamp() + ".csv"
             file_name = "dart_inference_results" + ".csv"
         else:
             file_name = self.filename + ".csv"
@@ -78,6 +86,10 @@ class ResultsExport:
 
 
 def verify_extension(file_ext, user_ext):
+    """
+    Checks whether extension supplied is valid in Pillow.
+    """
+
     if file_ext in ALL_PILLOW_EXTENSIONS:
         return file_ext
     elif user_ext in ALL_PILLOW_EXTENSIONS:
