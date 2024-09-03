@@ -7,6 +7,11 @@ from .panels import *
 
 # TODO: all toggles should be one class. (maybe all option settings should be - left right etc.)
 class Menu(ttk.Frame):
+    """
+    The screen that is displayed on the right side once a folder is selected.
+    Contains Settings and Display panel.
+    """
+
     def __init__(self, parent, run_dart_func):
         super().__init__(master=parent)
         self.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
@@ -123,6 +128,7 @@ class SettingsFrame(ttk.Frame):
     """
     getters (So that the dart panel can access the settings.)
     """
+
     def get_user_filename(self):
         return self.user_filename
 
@@ -152,6 +158,7 @@ class DartFrame(ttk.Frame):
     """
     The display panel (bottom left)
     """
+
     def __init__(self, parent, run_dart_func, file_ext_var, crop_var, export_loc_var, user_ext_var, filename_var):
         super().__init__(master=parent, relief=tk.RIDGE)
         self.pack(fill="x", padx=10, pady=4, ipady=50)

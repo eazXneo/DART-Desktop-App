@@ -5,7 +5,10 @@ from .settings import *
 
 
 class FileExtensionPanel(ttk.Frame):
-    # TODO: file_string ==> file_ext
+    """
+    Setting for the file extension
+    """
+
     def __init__(self, parent, curr_ext_var, entry_ext_string):
         super().__init__(master=parent)
         self.grid(row=0, column=0, columnspan=2, sticky="we")
@@ -27,11 +30,14 @@ class FileExtensionPanel(ttk.Frame):
 
         self.entry_ext = ttk.Entry(self, textvariable=self.entry_ext_string)
 
-        # TODO: probably use .trace() to check whether "other" is selected
+        # check whether "other" is selected
         self.combo_ext_string.trace("w", self.combo_string_update)
 
     def combo_string_update(self, *args):
-        print("combobox now:", self.combo_ext_string.get())
+        """
+        tracks the current value of the conmbo string
+        (needed to display or hide the entry field to specify own file extension.)
+        """
 
         if self.combo_ext_string.get() == "OTHER (specify)":
             self.entry_ext.grid(row=0, column=3, sticky="w")
